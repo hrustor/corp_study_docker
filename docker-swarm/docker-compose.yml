@@ -1,0 +1,31 @@
+version: '3'
+services:
+  nginx-gs:
+    build:
+      context: ./
+      dockerfile: nginx.dockerfile
+    image: nginx-gs:1.0
+    container_name: nginx-gs
+    ports:
+      - 80:8080
+    volumes:
+      - ./nginx-gs.conf:/etc/nginx/sites-available/nginx-gs.conf
+    depends_on:
+      - gs
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1GB
+                      
+  gs:
+    build:
+      context: ./
+      dockerfile: multi.dockerfile
+    image: gs:1.0
+    container_name: gs
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1GB
