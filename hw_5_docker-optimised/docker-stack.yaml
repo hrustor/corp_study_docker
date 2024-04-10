@@ -1,0 +1,42 @@
+version: '3.9'
+services:
+  nginx-gs:
+    image: nginx-gs:1.18.0
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 1
+        order: start-first
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3  
+    ports:
+      - 80:8080
+    environment:
+      TZ: "Europe/Moscow"
+    depends_on:
+      - gs
+    configs:
+      - source: nginx-gs.conf
+        target: /etc/nginx/sites-available/nginx-gs.conf
+
+  gs:
+    image: gs:1.0
+    deploy:
+      replicas: 2
+      update_config:
+        parallelism: 1
+        order: start-first
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+    environment:    
+      TZ: "Europe/Moscow"
+    
+configs:
+  nginx-gs.conf:
+    file: nginx-gs.conf
